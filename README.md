@@ -1,4 +1,4 @@
 poc-hn-heat
 ===========
 
-Heat templates for poc-hn components
+Heat templates for poc-hn gluster components
