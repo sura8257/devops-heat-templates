@@ -1,0 +1,13 @@
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Eclipse
+.settings
+
+# swap and temp files
+.*.swp
+*swp
+*bak
+*~
