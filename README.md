@@ -27,7 +27,9 @@ check if Heat is happy:
 $ heat stack-list
 ```
 
-create a stack:
+### GlusterFS
+
+Create GlusterFS stack:
 
 ```
 heat stack-create heat-test-gluster -P "private_net_name=test_gluster" -P organization=anzdevops -P validation_key="$(< .chef/anzdevops-validator.pem)" --template-file ~/workspace/github.rackspace.com/anzdevops/poc-hn-heat/gluster-multi.yaml
@@ -35,7 +37,17 @@ heat stack-create heat-test-gluster -P "private_net_name=test_gluster" -P organi
 
 Chef client is installed on Cloud Servers, and nodes added to Managed-Chef organisation.
 
-Delete stack:
+## Redis
+
+Create Redis master-slave stack:
+
+```
+$ heat stack-create test_redis -P organization=anzdevops -P validation_key="$(< .chef/anzdevops-validator.pem)" --template-file ~/workspace/github.rackspace.com/anzdevops/poc-hn-heat/redis-master-slave.yaml
+```
+
+### Delete stack
+
+Just run:
 
 ```
 $ heat stack-delete heat-test-gluster
