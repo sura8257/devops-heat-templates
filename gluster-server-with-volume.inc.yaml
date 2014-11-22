@@ -1,0 +1,213 @@
+heat_template_version: 2013-05-23
+
+parameters:
+  prefix:
+    label: Hostname Prefix
+    description: The prefix to use for all server hostnames
+    type: string
+    default: gluster
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+
+  volume_name:
+    type: string
+    description: Name of the volume to be created.
+    default: cbs
+
+  volume_size:
+    type: number
+    description: Size of the volume to be created.
+    default: 75
+    constraints:
+    - range: { min: 75, max: 1024 }
+      description: must be between 75 and 1024 GB
+
+  # gluster_flavor:
+    # type: string
+
+  # gluster_image:
+    # type: string
+
+  gluster_flavor:
+    label: Gluster Server Flavor
+    type: string
+    default: 4 GB Performance
+    constraints:
+    - allowed_values:
+      - 2 GB Performance
+      - 4 GB Performance
+      - 8 GB Performance
+      - 15 GB Performance
+      - 30 GB Performance
+    description: |
+      Must be a valid Rackspace Cloud Server flavor for the region you have
+      selected to deploy into.
+
+  gluster_image:
+    label: Server Base Image
+    type: string
+    default: 598a4282-f14b-4e50-af4c-b3e52749d9f9   # Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    constraints:
+    - allowed_values:
+      - bfa5783c-e40e-4668-adc1-feb0ae3d7a46  # CentOS 7 (PVHVM)
+      - b279d8e6-1cbd-4e7c-875a-f6dbffc4c4a0  # Debian 7 (Wheezy) (PVHVM)
+      - 598a4282-f14b-4e50-af4c-b3e52749d9f9  # Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    description: Server image to use for gluster servers
+
+  # gluster_net:
+  #   type: Rackspace::Cloud::Network
+
+  # instance_id:
+  #   type: string
+  #   description: Server to attach volume to
+
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+
+  chef_version:
+    label: version
+    description: |
+      Optional: Version of Chef Client to use
+    type: string
+    default: 11.16.0
+
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  role:
+    label: Role
+    description: |
+      Optional: Chef Role. Will default to "_default"
+    type: string
+    default: _default
+
+  validation_key:
+    label: Validation Key
+    description: |
+      Required: chef-client will attempt to use the private key assigned to the
+      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
+      the chef-validator is unable to make an authenticated request to the
+      Chef server, the initial chef-client run will fail.
+    type: string
+    default:
+
+resources:
+  cbs_volume:
+    type: OS::Cinder::Volume
+    properties:
+      name: { get_param: volume_name }
+      size: { get_param: volume_size }
+      # description: Volume for GlusterFS server
+
+  cbs_volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    depends_on:
+    - gluster_server
+    properties:
+      volume_id: { get_resource: cbs_volume }
+      instance_uuid: { get_resource: gluster_server}
+      mountpoint: /dev/xvdg
+
+  gluster_server:
+    type: Rackspace::Cloud::Server
+    depends_on:
+    # - private_net
+    - cbs_volume
+    properties:
+      flavor: { get_param: gluster_flavor }
+      image: { get_param: gluster_image }
+      config_drive: true
+      networks:
+      - uuid: "00000000-0000-0000-0000-000000000000"
+      - uuid: "11111111-1111-1111-1111-111111111111"
+      # - network: { get_resource: private_net }
+      # - network: { get_param: gluster_net }
+      name: gluster
+      metadata:
+        group: gluster-build
+        rax-heat: { get_param: "OS::stack_id" }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+
+            LOGFILE="/var/log/cloud-init-chef-bootstrap.setup.$$"
+
+            # Initial timestamp and debug information
+            date > $LOGFILE
+            echo "Starting cloud-init bootstrap" >> $LOGFILE
+            echo "chef_version parameter: %chef_version%" >> $LOGFILE
+            echo "organization parameter: %organization%" >> $LOGFILE
+            echo "role parameter: %role%" >> $LOGFILE
+
+            # Infer the Chef Server's URL if none was passed
+            CHEFSERVERURL='%chef_server_url%'
+            if [ -n $CHEFSERVERURL ]; then
+              echo "chef_server_url parameter: not passed" >> $LOGFILE
+              CHEFSERVERURL="https://api.opscode.com/organizations/%organization%"
+            else
+              echo "chef_server_url parameter: $CHEFSERVERURL" >> $LOGFILE
+              CHEFSERVERURL="%chef_server_url%"
+            fi
+
+            # Store the validation key in /etc/chef/validator.pem
+            echo "Storing validation key in /etc/chef/validator.pem"
+            mkdir /etc/chef /var/log/chef &>/dev/null
+            cat >/etc/chef/validator.pem <<EOF
+            %validation_key%
+            EOF
+
+            # Cook a minimal client.rb for getting the chef-client registered
+            echo "Creating a minimal /etc/chef/client.rb" >> $LOGFILE
+            touch /etc/chef/client.rb
+            cat >/etc/chef/client.rb <<EOF
+              log_level        :info
+              log_location     STDOUT
+              chef_server_url  "$CHEFSERVERURL"
+              validation_key         "/etc/chef/validator.pem"
+              validation_client_name "%organization%-validator"
+            EOF
+
+            # Cook the first boot file
+            echo "Creating a minimal /etc/chef/first-boot.json" >> $LOGFILE
+            touch /etc/chef/first-boot.json
+            cat >/etc/chef/first-boot.json <<EOF
+            {"run_list":[%role%]}
+            EOF
+
+            # Install chef-client through omnibus (if not already available)
+            if [ ! -f /usr/bin/chef-client ]; then
+              echo "Installing chef using omnibus installer" >> $LOGFILE
+              # adjust to install the latest vs. a particular version
+              curl -L https://www.opscode.com/chef/install.sh | sudo bash -s -- -v %chef_version% &>$LOGFILE
+              echo "Installation of chef complete" >> $LOGFILE
+            fi
+
+            # Kick off the first chef run
+            echo "Executing the first chef-client run"
+            if [ -f /usr/bin/chef-client ]; then
+              echo "First Chef client run" >> $LOGFILE
+              /usr/bin/chef-client
+            fi
+
+            # Script complete. Log final timestamp
+            date >> $LOGFILE
+
+          params:
+            "%chef_server_url%": { get_param: chef_server_url}
+            "%chef_version%": { get_param: chef_version}
+            "%organization%": { get_param: organization}
+            "%role%": { get_param: role}
+            "%validation_key%": { get_param: validation_key }
