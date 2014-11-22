@@ -1,9 +1,20 @@
 heat_template_version: 2013-05-23
 
 parameters:
-  prefix:
+  cbs_volume_name:
+    label: CBS name
+    description: Name of Cloud Block Storage
+    type: string
+    default: gluster
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+
+  gluster_server_name:
     label: Hostname Prefix
-    description: The prefix to use for all server hostnames
+    description: Name of Gluster Server
     type: string
     default: gluster
     constraints:
@@ -107,7 +118,7 @@ resources:
   cbs_volume:
     type: OS::Cinder::Volume
     properties:
-      name: { get_param: volume_name }
+      name: { get_param: cbs_volume_name }
       size: { get_param: volume_size }
       # description: Volume for GlusterFS server
 
@@ -134,7 +145,7 @@ resources:
       - uuid: "11111111-1111-1111-1111-111111111111"
       # - network: { get_resource: private_net }
       # - network: { get_param: gluster_net }
-      name: gluster
+      name: { get_param: gluster_server_name }
       metadata:
         group: gluster-build
         rax-heat: { get_param: "OS::stack_id" }

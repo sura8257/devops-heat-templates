@@ -152,18 +152,21 @@ resources:
           volume_size: { get_param: volume_size }
           gluster_flavor: { get_param: gluster_flavor }
           gluster_image: { get_param: gluster_image }
-          prefix: { get_param: prefix}
           chef_server_url: { get_param: chef_server_url}
           chef_version: { get_param: chef_version}
           organization: { get_param: organization}
           role: { get_param: role}
           validation_key: { get_param: validation_key}
-          # gluster_net: { get_resource: private_net }
-          # name:
-            # str_replace:
-              # template: prefix-%index%
-              # params:
-                # prefix: cbs
+          cbs_volume_name:
+            str_replace:
+              template: cbs_prefix-%index%
+              params:
+                cbs_prefix: cbs
+          gluster_server_name:
+            str_replace:
+              template: prefix-%index%
+              params:
+                prefix: { get_param: prefix }
           # metadata:
           #   group: gluster-build
           #   rax-heat: { get_param: "OS::stack_id" }
