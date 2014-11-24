@@ -51,8 +51,8 @@ parameters:
       - 2 GB Performance
       - 4 GB Performance
       - 8 GB Performance
-      - 15 GB Performance
-      - 30 GB Performance
+      - 15 GB Performance #Deprecated Flavor
+      - 30 GB Performance #Deprecated Flavor
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
@@ -60,12 +60,12 @@ parameters:
   gluster_image:
     label: Server Base Image
     type: string
-    default: 598a4282-f14b-4e50-af4c-b3e52749d9f9   # Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     constraints:
     - allowed_values:
-      - bfa5783c-e40e-4668-adc1-feb0ae3d7a46  # CentOS 7 (PVHVM)
-      - b279d8e6-1cbd-4e7c-875a-f6dbffc4c4a0  # Debian 7 (Wheezy) (PVHVM)
-      - 598a4282-f14b-4e50-af4c-b3e52749d9f9  # Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+      - CentOS 7 (PVHVM)
+      - Debian 7 (Wheezy) (PVHVM)
+      - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     description: Server image to use for gluster servers
 
   # gluster_net:
