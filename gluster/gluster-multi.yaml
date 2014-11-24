@@ -165,7 +165,7 @@ resources:
             str_replace:
               template: cbs_prefix-%index%
               params:
-                cbs_prefix: cbs
+                cbs_prefix: { get_param: prefix }
           gluster_server_name:
             str_replace:
               template: prefix-%index%
