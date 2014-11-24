@@ -1,3 +1,4 @@
+# vim: set sts=2 sw=2 ts=2 expandtab:
 heat_template_version: 2013-05-23
 
 description: |
@@ -143,11 +144,14 @@ resources:
 
   gluster_servers_group:
     type: OS::Heat::ResourceGroup
+    depends_on:
+    - private_net
     properties:
       count: { get_param: gluster_server_count }
       resource_def:
         type: gluster-server-with-volume.inc.yaml
         properties:
+          gluster_network: { get_resource: private_net }
           volume_name: { get_param: volume_name }
           volume_size: { get_param: volume_size }
           gluster_flavor: { get_param: gluster_flavor }
@@ -170,3 +174,4 @@ resources:
           # metadata:
           #   group: gluster-build
           #   rax-heat: { get_param: "OS::stack_id" }
+          #
