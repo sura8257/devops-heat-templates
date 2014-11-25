@@ -48,11 +48,10 @@ parameters:
     default: 4 GB Performance
     constraints:
     - allowed_values:
-      - 2 GB Performance
-      - 4 GB Performance
-      - 8 GB Performance
-      - 15 GB Performance #Deprecated Flavor
-      - 30 GB Performance #Deprecated Flavor
+      - 1 GB General Purpose v1
+      - 2 GB General Purpose v1
+      - 4 GB General Purpose v1
+      - 8 GB General Purpose v1
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
@@ -63,6 +62,7 @@ parameters:
     default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     constraints:
     - allowed_values:
+      - CentOS 6.5 (PVHVM)
       - CentOS 7 (PVHVM)
       - Debian 7 (Wheezy) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
@@ -207,7 +207,7 @@ resources:
             if [ ! -f /usr/bin/chef-client ]; then
               echo "Installing chef using omnibus installer" >> $LOGFILE
               # adjust to install the latest vs. a particular version
-              curl -L https://www.opscode.com/chef/install.sh | sudo bash -s -- -v %chef_version% &>$LOGFILE
+              wget -q -O - https://www.opscode.com/chef/install.sh | bash -s -- -v %chef_version% &>$LOGFILE
               echo "Installation of chef complete" >> $LOGFILE
             fi
 

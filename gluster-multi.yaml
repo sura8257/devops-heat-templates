@@ -35,14 +35,13 @@ parameters:
   gluster_flavor:
     label: Gluster Server Flavor
     type: string
-    default: 4 GB Performance
+    default: 2 GB General Purpose v1
     constraints:
     - allowed_values:
-      - 2 GB Performance
-      - 4 GB Performance
-      - 8 GB Performance
-      - 15 GB Performance
-      - 30 GB Performance
+      - 1 GB General Purpose v1
+      - 2 GB General Purpose v1
+      - 4 GB General Purpose v1
+      - 8 GB General Purpose v1
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
@@ -63,6 +62,7 @@ parameters:
     default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     constraints:
     - allowed_values:
+      - CentOS 6.5 (PVHVM)
       - CentOS 7 (PVHVM)
       - Debian 7 (Wheezy) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
