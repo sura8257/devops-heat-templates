@@ -1,0 +1,200 @@
+# vim: set sts=2 sw=2 ts=2 expandtab:
+heat_template_version: 2014-10-16
+
+description: |
+  This heat template will deploy an autoscale group
+
+parameter_groups:
+
+- label: Server Settings
+  parameters:
+  - server_flavor
+  - min_server_count
+  - max_server_count
+
+- label: Chef Parameters
+  parameters:
+  - chef_server_url
+  - chef_version
+  - organization
+  - role
+  - validation_key
+
+parameters:
+  prefix:
+    label: Hostname Prefix
+    description: The prefix to use for all server hostnames
+    type: string
+    default: as-group 
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+
+  server_flavor:
+    label: Server Flavor
+    type: string
+    default: general1-1
+    constraints:
+    - allowed_values:
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8
+    description: |
+      Must be a valid Rackspace Cloud Server flavor for the region you have
+      selected to deploy into.
+
+  min_server_count:
+    label: Minimum number of servers
+    type: number
+    default: 2
+    constraints:
+    - range:
+        min: 0
+        max: 100
+    description: Must be between 0 and 100 servers.
+
+  max_server_count:
+    label: Maximum number of servers
+    type: number
+    default: 5
+    constraints:
+    - range:
+        min: 1
+        max: 100
+    description: Must be between 0 and 100 servers and greater than minimum servers
+
+  scale_up_count:
+    label: Scale up count (servers)
+    type: number
+    default: 1
+    constraints:
+      - range:
+          min: 1
+          max: 100
+ 
+  scale_down_count:
+    label: Scale down count (servers)
+    type: number
+    default: -1
+    constraints:
+      - range:
+          min: -100
+          max: -1
+ 
+  scale_up_cooldown:
+    label: Scale up cooldown timeout (seconds)
+    type: number
+    default: 60
+    constraints:
+      - range:
+          min: 0
+ 
+  scale_down_cooldown:
+    label: Scale up cooldown timeout (seconds)
+    type: number
+    default: 60
+    constraints:
+      - range:
+          min: 0
+
+  global_cooldown:
+    label: Autoscale global cooldown timeout (seconds)
+    type: number
+    default: 60
+
+  server_image:
+    label: Server Base Image
+    type: string
+    description: Server image to use for servers
+
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+
+  chef_version:
+    label: version
+    description: |
+      Optional: Version of Chef Client to use
+    type: string
+    default: 11.16.0
+
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  role:
+    label: Role
+    description: |
+      Optional: Chef Role. Will default to "_default"
+    type: string
+    default: _default
+
+  validation_key:
+    label: Validation Key
+    description: |
+      Required: chef-client will attempt to use the private key assigned to the
+      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
+      the chef-validator is unable to make an authenticated request to the
+      Chef server, the initial chef-client run will fail.
+    type: string
+    default:
+
+resources:
+
+  auto_scale_group:
+    type: Rackspace::AutoScale::Group
+    properties:
+      groupConfiguration:
+        name: { get_param: prefix }
+        maxEntities: { get_param: max_server_count }
+        minEntities: { get_param: min_server_count }
+        cooldown: { get_param: global_cooldown }
+      launchConfiguration:
+        type: launch_server
+        args:
+          server:
+            name: { get_param: prefix }
+            flavorRef: { get_param: server_flavor }
+            imageRef: { get_param: server_image }
+            config_drive: true
+            networks:
+            - uuid: "00000000-0000-0000-0000-000000000000"
+            - uuid: "11111111-1111-1111-1111-111111111111"
+            user_data:
+              str_replace:
+                template: { get_file: ../chef_bootstrap.tpl }
+                params:
+                  "%chef_server_url%": { get_param: chef_server_url}
+                  "%chef_version%": { get_param: chef_version}
+                  "%organization%": { get_param: organization}
+                  "%role%": { get_param: role}
+                  "%validation_key%": { get_param: validation_key }
+
+
+  scale_up_policy:
+    type: Rackspace::AutoScale::ScalingPolicy
+    properties:
+      group: { get_resource: auto_scale_group }
+      name: Scale Up
+      change: { get_param: scale_up_count } 
+      cooldown: { get_param: scale_up_cooldown }
+      type: webhook
+
+  scale_down_policy:
+    type: Rackspace::AutoScale::ScalingPolicy
+    properties:
+      group: { get_resource: auto_scale_group }
+      name: Scale Down
+      change: { get_param: scale_down_count } 
+      cooldown: { get_param: scale_down_cooldown }
+      type: webhook
