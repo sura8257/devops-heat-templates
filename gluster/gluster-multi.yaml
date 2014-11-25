@@ -35,9 +35,13 @@ parameters:
   gluster_flavor:
     label: Gluster Server Flavor
     type: string
-    default: 2 GB General Purpose v1
+    default: 1 GB General Purpose v1
     constraints:
     - allowed_values:
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8
       - 1 GB General Purpose v1
       - 2 GB General Purpose v1
       - 4 GB General Purpose v1

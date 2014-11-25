@@ -32,18 +32,21 @@ parameters:
   redis_flavor:
     label: Redis Server Flavor
     type: string
-    default: 4 GB Performance
+    default: 1 GB General Purpose v1
     constraints:
     - allowed_values:
-      - 2 GB Performance
-      - 4 GB Performance
-      - 8 GB Performance
-      - 15 GB Performance
-      - 30 GB Performance
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8
+      - 1 GB General Purpose v1
+      - 2 GB General Purpose v1
+      - 4 GB General Purpose v1
+      - 8 GB General Purpose v1
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
-    
+
   redis_image:
     label: Server Base Image
     type: string
@@ -285,4 +288,3 @@ resources:
 #    instance_private_ip:
 #      description: Private IP address of the deployed compute instance
 #      value: { get_attr: [my_instance, networks, private, 0] }
-
