@@ -35,17 +35,15 @@ parameters:
   server_flavor:
     label: Server Flavor
     type: string
-    default: 1 GB General Purpose v1
+    default: general1-1
     constraints:
     - allowed_values:
       - general1-1
       - general1-2
       - general1-4
       - general1-8
-      - 1 GB General Purpose v1
-      - 2 GB General Purpose v1
-      - 4 GB General Purpose v1
-      - 8 GB General Purpose v1
+      # Autoscale does use flavor-ID only
+      #- 1 GB General Purpose v1 # NO
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.

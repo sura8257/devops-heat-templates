@@ -53,6 +53,9 @@ Create Autoscale Group and configuration:
 $ heat stack-create -P organization=anzdevops -P validation_key="$(< .chef/anzdevops-validator.pem)" --template-file ~/workspace/github.rackspace.com/anzdevops/poc-hn-heat/autoscale/autoscale.yaml -P server_image=70d38a32-5f63-45df-a0e7-7e06fc89370a autoscale-test
 ```
 
+**Attention!** Autoscale requires flavor and image id, it does not accept flavor
+and image alias.
+
 ### Delete stack
 
 Just run:
@@ -60,4 +63,3 @@ Just run:
 ```
 $ heat stack-delete heat-test-gluster
 ```
-
