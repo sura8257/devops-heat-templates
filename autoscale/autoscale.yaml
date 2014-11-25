@@ -25,7 +25,7 @@ parameters:
     label: Hostname Prefix
     description: The prefix to use for all server hostnames
     type: string
-    default: as-group 
+    default: as-group
     constraints:
     - length:
         min: 1
@@ -74,7 +74,7 @@ parameters:
       - range:
           min: 1
           max: 100
- 
+
   scale_down_count:
     label: Scale down count (servers)
     type: number
@@ -83,7 +83,7 @@ parameters:
       - range:
           min: -100
           max: -1
- 
+
   scale_up_cooldown:
     label: Scale up cooldown timeout (seconds)
     type: number
@@ -91,7 +91,7 @@ parameters:
     constraints:
       - range:
           min: 0
- 
+
   scale_down_cooldown:
     label: Scale up cooldown timeout (seconds)
     type: number
@@ -172,7 +172,7 @@ resources:
             - uuid: "11111111-1111-1111-1111-111111111111"
             user_data:
               str_replace:
-                template: { get_file: ../chef_bootstrap.tpl }
+                template: { get_file: ../templates/chef_bootstrap.tpl }
                 params:
                   "%chef_server_url%": { get_param: chef_server_url}
                   "%chef_version%": { get_param: chef_version}
@@ -186,7 +186,7 @@ resources:
     properties:
       group: { get_resource: auto_scale_group }
       name: Scale Up
-      change: { get_param: scale_up_count } 
+      change: { get_param: scale_up_count }
       cooldown: { get_param: scale_up_cooldown }
       type: webhook
 
@@ -195,6 +195,6 @@ resources:
     properties:
       group: { get_resource: auto_scale_group }
       name: Scale Down
-      change: { get_param: scale_down_count } 
+      change: { get_param: scale_down_count }
       cooldown: { get_param: scale_down_cooldown }
       type: webhook
