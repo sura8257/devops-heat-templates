@@ -24,7 +24,7 @@ parameters:
     label: Hostname Prefix
     description: The prefix to use for all server hostnames
     type: string
-    default: as-group
+    default: node
     constraints:
     - length:
         min: 1
@@ -125,7 +125,11 @@ resources:
       resource_def:
         type: Rackspace::Cloud::Server
         properties:
-          name: { get_param: prefix }
+          name:
+            str_replace:
+              template: prefix-%index%
+              params:
+                prefix: { get_param: prefix }
           flavor: { get_param: server_flavor }
           image: { get_param: server_image }
           config_drive: true
