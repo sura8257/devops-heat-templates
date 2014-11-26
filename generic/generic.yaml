@@ -9,8 +9,7 @@ parameter_groups:
 - label: Server Settings
   parameters:
   - server_flavor
-  - min_server_count
-  - max_server_count
+  - server_count
 
 - label: Chef Parameters
   parameters:
@@ -56,7 +55,7 @@ parameters:
     default: 1
     constraints:
     - range:
-        in: 0
+        min: 1
         max: 100
     description: Must be between 0 and 100 servers.
 
@@ -115,10 +114,11 @@ parameters:
     label: Server Group
     description: Set the group metadata for the servers.
     type: string
+    default: default_group
 
 resources:
 
-  server_group:
+  server_group_resource:
     type: OS::Heat::ResourceGroup
     properties:
       count: { get_param: server_count }
