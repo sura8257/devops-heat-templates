@@ -53,6 +53,8 @@ parameters:
     default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     constraints:
     - allowed_values:
+      - CentOS 6.5 (PVHVM)
+      - CentOS 7 (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr)
     description: Server image to use for Redis servers
@@ -210,7 +212,7 @@ resources:
             rax-heat: { get_param: "OS::stack_id" }
           user_data:
             str_replace:
-              template: template: { get_file: ../templates/chef_bootstrap.tpl }
+              template: { get_file: ../templates/chef_bootstrap.tpl }
               params:
                 "%chef_server_url%": { get_param: chef_server_url}
                 "%chef_version%": { get_param: chef_version}
