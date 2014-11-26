@@ -32,7 +32,7 @@ $ heat stack-list
 Create Autoscale Group and configuration:
 
 ```
-$ heat stack-create -P organization=fooorg -P validation_key="$(< /path/to/.chef/anzdevops-validator.pem)" --template-file /path/to/poc-hn-heat/autoscale/autoscale.yaml -P server_image=70d38a32-5f63-45df-a0e7-7e06fc89370a autoscale-test
+$ heat stack-create -P organization=fooorg -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" --template-file /path/to/poc-hn-heat/autoscale/autoscale.yaml -P server_image=70d38a32-5f63-45df-a0e7-7e06fc89370a autoscale-test
 ```
 
 **Attention!** Autoscale requires flavor and image id, it does not accept flavor
@@ -43,7 +43,7 @@ and image alias.
 Create *generic* stack:
 
 ```
-$ heat stack-create test_generic -P organization=fooorg -P validation_key="$(< /path/to/.chef/anzdevops-validator.pem)" --template-file /path/to/poc-hn-heat/generic/generic.yaml
+$ heat stack-create test_generic -P organization=fooorg -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" --template-file /path/to/poc-hn-heat/generic/generic.yaml
 ```
 
 ### GlusterFS
@@ -51,7 +51,7 @@ $ heat stack-create test_generic -P organization=fooorg -P validation_key="$(< /
 Create GlusterFS stack:
 
 ```
-heat stack-create heat-test-gluster -P "private_net_name=test_gluster" -P organization=fooorg -P validation_key="$(< /path/to/.chef/anzdevops-validator.pem)" --template-file /path/to/poc-hn-heat/gluster/gluster-multi.yaml
+heat stack-create heat-test-gluster -P "private_net_name=test_gluster" -P organization=fooorg -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" --template-file /path/to/poc-hn-heat/gluster/gluster-multi.yaml
 ```
 
 Chef client is installed on Cloud Servers, and nodes added to Managed-Chef organisation.
