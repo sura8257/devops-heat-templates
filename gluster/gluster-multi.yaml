@@ -45,6 +45,16 @@ parameters:
       - 2 GB General Purpose v1
       - 4 GB General Purpose v1
       - 8 GB General Purpose v1
+      - io1-15
+      - io1-30
+      - io1-60
+      - io1-90
+      - io1-120
+      - 15 GB I/O v1
+      - 30 GB I/O v1
+      - 60 GB I/O v1
+      - 90 GB I/O v1
+      - 120 GB I/O v1
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
