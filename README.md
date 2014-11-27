@@ -56,6 +56,18 @@ heat stack-create heat-test-gluster -P "private_net_name=test_gluster" -P organi
 
 Chef client is installed on Cloud Servers, and nodes added to Managed-Chef organisation.
 
+### Redis
+
+Create Redis master-slave stack:
+
+```
+heat stack-create hn-redis-a -P "prefix=hn-redis-a" \
+-P organization=anzdevops \
+-P validation_key="$(< ~/chef/racker_siso/anzdevops/chef-repo/.chef/anzdevops-validator.pem)"
+-P redis_image="CentOS 6.5 (PVHVM)" -P role='"recipe[rackops_rolebook]"' \
+--template-file ~/workspace/github.rackspace.com/anzdevops/poc-hn-heat/redis/redis-master-slave.yaml
+```
+
 ### Delete stack
 
 Just run:

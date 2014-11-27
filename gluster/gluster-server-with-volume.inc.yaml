@@ -153,7 +153,7 @@ resources:
         rax-heat: { get_param: "OS::stack_id" }
       user_data:
         str_replace:
-          template: template: { get_file: ../templates/chef_bootstrap.tpl }
+          template: { get_file: ../templates/chef_bootstrap.tpl }
           params:
             "%chef_server_url%": { get_param: chef_server_url}
             "%organization%": { get_param: organization}
