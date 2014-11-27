@@ -60,3 +60,5 @@ fi
 
 # Script complete. Log final timestamp
 date >> $LOGFILE
+
+exit 0
