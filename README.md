@@ -69,3 +69,11 @@ Alternatively abandon stack, and deletete resources manually:
 ```
 $ heat stack-delete foo-stack
 ```
+
+### Chef Client 'run_list'
+
+Use *role* parameter:
+
+```
+-P role='"recipe[rackops_rolebook]"'
+```

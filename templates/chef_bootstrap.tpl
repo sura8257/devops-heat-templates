@@ -56,7 +56,7 @@ fi
 echo "Executing the first chef-client run"
 if [ -f /usr/bin/chef-client ]; then
   echo "First Chef client run" >> $LOGFILE
-  /usr/bin/chef-client
+  /usr/bin/chef-client -j /etc/chef/first-boot.json
 fi
 
 # Script complete. Log final timestamp
