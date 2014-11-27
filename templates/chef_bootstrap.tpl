@@ -5,7 +5,6 @@ LOGFILE="/var/log/cloud-init-chef-bootstrap.setup.$$"
 # Initial timestamp and debug information
 date > $LOGFILE
 echo "Starting cloud-init bootstrap" >> $LOGFILE
-echo "chef_version parameter: %chef_version%" >> $LOGFILE
 echo "organization parameter: %organization%" >> $LOGFILE
 echo "role parameter: %role%" >> $LOGFILE
 
@@ -48,7 +47,7 @@ EOF
 if [ ! -f /usr/bin/chef-client ]; then
   echo "Installing chef using omnibus installer" >> $LOGFILE
   # adjust to install the latest vs. a particular version
-  curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v %chef_version% &>$LOGFILE
+  curl -L https://www.opscode.com/chef/install.sh | bash -s -- &>$LOGFILE
   echo "Installation of chef complete" >> $LOGFILE
 fi
 

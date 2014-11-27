@@ -15,7 +15,6 @@ parameter_groups:
 - label: Chef Parameters
   parameters:
   - chef_server_url
-  - chef_version
   - organization
   - role
   - validation_key
@@ -95,13 +94,6 @@ parameters:
     type: string
     default: ''
 
-  chef_version:
-    label: version
-    description: |
-      Optional: Version of Chef Client to use
-    type: string
-    default: 11.16.4
-
   organization:
     label: Organization
     description: |
@@ -161,7 +153,6 @@ resources:
           gluster_flavor: { get_param: gluster_flavor }
           gluster_image: { get_param: gluster_image }
           chef_server_url: { get_param: chef_server_url}
-          chef_version: { get_param: chef_version}
           organization: { get_param: organization}
           role: { get_param: role}
           validation_key: { get_param: validation_key}
