@@ -79,7 +79,7 @@ $ heat stack-delete foo-stack
 Alternatively abandon stack, and deletete resources manually:
 
 ```
-$ heat stack-delete foo-stack
+$ heat stack-abandon foo-stack
 ```
 
 ### Chef Client 'run_list'
