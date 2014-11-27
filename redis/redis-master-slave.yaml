@@ -54,7 +54,6 @@ parameters:
     constraints:
     - allowed_values:
       - CentOS 6.5 (PVHVM)
-      - CentOS 7 (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr)
     description: Server image to use for Redis servers
