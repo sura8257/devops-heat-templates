@@ -92,7 +92,7 @@ parameters:
     description: |
       Optional: Version of Chef Client to use
     type: string
-    default: 11.16.0
+    default: 11.16.4
 
   organization:
     label: Organization
