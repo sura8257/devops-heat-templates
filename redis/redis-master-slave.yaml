@@ -185,6 +185,7 @@ resources:
                 # Script complete. Log final timestamp
                 date >> $LOGFILE
 
+              template: template: { get_file: ../templates/chef_bootstrap.tpl }
               params:
                 "%chef_server_url%": { get_param: chef_server_url}
                 "%chef_version%": { get_param: chef_version}
