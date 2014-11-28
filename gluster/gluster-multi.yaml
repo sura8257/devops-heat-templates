@@ -103,9 +103,9 @@ parameters:
   role:
     label: Role
     description: |
-      Optional: Chef Role. Will default to "_default"
+      Optional: Chef Role. Will default to an empty string resulting in an empty run_list
     type: string
-    default: _default
+    default: ''
 
   validation_key:
     label: Validation Key
