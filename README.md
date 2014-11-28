@@ -64,7 +64,7 @@ Create Redis master-slave stack:
 heat stack-create hn-redis-a -P "prefix=hn-redis-a" \
 -P organization=anzdevops \
 -P validation_key="$(< ~/chef/racker_siso/anzdevops/chef-repo/.chef/anzdevops-validator.pem)"
--P redis_image="CentOS 6.5 (PVHVM)" -P role='"recipe[rackops_rolebook]"' \
+-P redis_image="CentOS 6.5 (PVHVM)" -P run_list='"recipe[rackops_rolebook]"' \
 --template-file ~/workspace/github.rackspace.com/anzdevops/poc-hn-heat/redis/redis-master-slave.yaml
 ```
 
@@ -84,8 +84,8 @@ $ heat stack-abandon foo-stack
 
 ### Chef Client 'run_list'
 
-Use *role* parameter:
+Use *run_list** parameter:
 
 ```
--P role='"recipe[rackops_rolebook]"'
+-P run_list='"recipe[rackops_rolebook]"'
 ```

@@ -16,7 +16,7 @@ parameter_groups:
   parameters:
   - chef_server_url
   - organization
-  - role
+  - run_list
   - validation_key
 
 parameters:
@@ -110,10 +110,10 @@ parameters:
     type: string
     default:
 
-  role:
-    label: Role
+  run_list:
+    label: Run List
     description: |
-      Optional: Chef Role. Will default to an empty string resulting in an empty run_list
+      Optional: Chef Run List. Will default to an empty string resulting in an empty run_list
     type: string
     default: ''
 
@@ -163,7 +163,7 @@ resources:
           gluster_image: { get_param: gluster_image }
           chef_server_url: { get_param: chef_server_url}
           organization: { get_param: organization}
-          role: { get_param: role}
+          run_list: { get_param: run_list}
           validation_key: { get_param: validation_key}
           cbs_volume_name:
             str_replace:
