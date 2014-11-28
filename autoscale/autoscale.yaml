@@ -43,6 +43,11 @@ parameters:
       - general1-8
       # Autoscale does use flavor-ID only
       #- 1 GB General Purpose v1 # NO
+      - io1-15
+      - io1-30
+      - io1-60
+      - io1-90
+      - io1-120
     description: |
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
