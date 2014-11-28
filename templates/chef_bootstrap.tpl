@@ -1,12 +1,13 @@
 #!/bin/bash
 
 LOGFILE="/var/log/cloud-init-chef-bootstrap.setup.$$"
+CHEFRUNLOGFILE="/var/log/cloud-init-chef-bootstrap.first-run.$$"
 
 # Initial timestamp and debug information
 date > $LOGFILE
 echo "Starting cloud-init bootstrap" >> $LOGFILE
 echo "organization parameter: %organization%" >> $LOGFILE
-echo "role parameter: %role%" >> $LOGFILE
+echo "run_list parameter: %run_list%" >> $LOGFILE
 
 # Infer the Chef Server's URL if none was passed
 CHEFSERVERURL='%chef_server_url%'
@@ -40,7 +41,7 @@ EOF
 echo "Creating a minimal /etc/chef/first-boot.json" >> $LOGFILE
 touch /etc/chef/first-boot.json
 cat >/etc/chef/first-boot.json <<EOF
-{"run_list":[%role%]}
+{"run_list":[%run_list%]}
 EOF
 
 # Install chef-client through omnibus (if not already available)
@@ -54,8 +55,11 @@ fi
 # Kick off the first chef run
 echo "Executing the first chef-client run"
 if [ -f /usr/bin/chef-client ]; then
-  echo "First Chef client run" >> $LOGFILE
-  /usr/bin/chef-client -j /etc/chef/first-boot.json >> /var/log/cloud-init-chef-first-run.$$
+  echo "First Chef client run with empty run list" >> $LOGFILE
+  /usr/bin/chef-client >> $CHEFRUNLOGFILE
+  
+  echo "First Chef client run with first-boot run list" >> $LOGFILE
+  /usr/bin/chef-client -j /etc/chef/first-boot.json >> $CHEFRUNLOGFILE
 fi
 
 # Script complete. Log final timestamp
