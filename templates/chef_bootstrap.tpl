@@ -49,7 +49,7 @@ EOF
 if [ ! -f /usr/bin/chef-client ]; then
   echo "Installing chef using omnibus installer" >> $LOGFILE
   # adjust to install the latest vs. a particular version
-  curl -L https://www.opscode.com/chef/install.sh | bash -s -v $CHEF_CLIENT_VERSION -- &>$LOGFILE
+  curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v $CHEF_CLIENT_VERSION -- &>$LOGFILE
   echo "Installation of chef complete" >> $LOGFILE
 fi
 
