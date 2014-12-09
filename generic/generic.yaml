@@ -117,6 +117,12 @@ parameters:
     type: string
     default: default_group
 
+  connected_network:
+    label: Primary Network ID
+    description: The network ID to connect the servers to, defaults to public net
+    type: string
+    default: "00000000-0000-0000-0000-000000000000"
+
 resources:
 
   server_group_resource:
@@ -135,7 +141,7 @@ resources:
           image: { get_param: server_image }
           config_drive: true
           networks:
-          - uuid: "00000000-0000-0000-0000-000000000000"
+          - uuid: { get_param: connected_network }
           - uuid: "11111111-1111-1111-1111-111111111111"
           metadata:
             group: { get_param: server_group }
