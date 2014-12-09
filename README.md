@@ -27,6 +27,10 @@ check if Heat is happy:
 $ heat stack-list
 ```
 
+## RackConnect v3
+
+RCv3 replaces the pulic interface with a private cloud network, all templates have the parameter ```connected_network``` available for use. This defaults to public net ```00000000-0000-0000-0000-000000000000``` however this can be specified as any RCv3 private network.
+
 ### AutoScale
 
 Create Autoscale Group and configuration:
