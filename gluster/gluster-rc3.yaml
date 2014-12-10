@@ -80,21 +80,6 @@ parameters:
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     description: Server image to use for gluster servers
 
-  private_net_cidr:
-    label: Private Network CIDR
-    type: string
-    default: 192.168.9.0/24
-    description: CIDR to use for private network between nodes
-
-  private_net_name:
-    label: Private Network Name
-    type: string
-    default: gluster-net
-    constraints:
-    - length:
-        min: 1
-        max: 16
-
   chef_server_url:
     label: Chef Server URL
     description: |
@@ -152,9 +137,9 @@ resources:
     properties:
       count: { get_param: gluster_server_count }
       resource_def:
-        type: gluster-server-with-volume.inc.yaml
+        type: gluster-server-with-volume-rc3.inc.yaml
         properties:
-          gluster_network: { get_resource: connected_network }
+          gluster_network: { get_param: connected_network }
           volume_name: { get_param: volume_name }
           volume_size: { get_param: volume_size }
           gluster_flavor: { get_param: gluster_flavor }
