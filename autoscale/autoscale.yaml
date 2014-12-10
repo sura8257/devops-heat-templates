@@ -2,7 +2,7 @@
 heat_template_version: 2014-10-16
 
 description: |
-  This heat template will deploy an autoscale group
+  This heat template will deploy an autoscale group. Nodes in the scaling group will be chef managed automatically.
 
 parameter_groups:
 
