@@ -82,7 +82,7 @@ for res in hot['resources']:
 #################
 output.append('')
 output.append('# Example Usage')
-output.append('```supernova heat-rc3 -x heat stack-create -P %s --template-file %s stack-name ```' %(" -P ".join(default_params), args.template))
+output.append('```supernova heat-rc3 -x heat stack-create -P %s -f %s -e env-2net.yaml stack-name ```' %(" -P ".join(default_params), args.template))
 
 ################
 print "\n".join(output)
