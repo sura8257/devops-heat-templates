@@ -4,12 +4,11 @@ import sys
 
 
 command_defaults = {
-  "validation_key": '$(< ~/chef-repo/.chef/fooorg-validator.pem)',
-  "organization": "fooorg",
+  "validation_key": '\"$(< ~/chef-repo/.chef/anzdevops-validator.pem)\"',
+  "organization": "anzdevops",
   "run_list": "\'\"recipe[rackops_rolebook]\"\'",
   "chef_server_url": None,
   "connected_network": None
-
 }
 
 parser = argparse.ArgumentParser(description="Generate README.md for a given heat template")

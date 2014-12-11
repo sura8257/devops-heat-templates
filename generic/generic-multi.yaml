@@ -96,7 +96,7 @@ parameters:
     default:
 
   connected_network:
-    label: Primary Network ID
+    label: Primary Network ID/Connected Network ID
     description: The network ID to connect the servers to, defaults to public net
     type: string
     default: "00000000-0000-0000-0000-000000000000"

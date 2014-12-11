@@ -1,7 +1,7 @@
 heat_template_version: 2013-05-23
 
 description: |
-  Resource group for ```resource_count``` number of servers with 2 networks and a CBS volume
+  Resource group for ```resource_count``` number of servers with a CBS volume
 
 parameters:
   resource_count:
