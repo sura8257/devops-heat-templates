@@ -116,7 +116,7 @@ resources:
           organization: { get_param: organization}
           run_list: { get_param: run_list}
           validation_key: { get_param: validation_key}
-          prefix:
+          server_name:
             str_replace:
               template: prefix-%index%
               params:

@@ -1,3 +1,3 @@
 resource_registry:
-  DevOps::ChefManaged::Server: ./generic/units/cbs-server-2net.yaml
+  DevOps::ChefManaged::Server: ./generic/units/generic-2net.yaml
   DevOps::ChefManaged::CBSServer: ./generic/units/cbs-server-2net.yaml
