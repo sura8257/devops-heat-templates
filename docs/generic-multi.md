@@ -53,7 +53,7 @@ infer the Managed Chef URL from the organization
 
 * Server Base Image
   * Name: server_image
-  * Default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+  * Default: CentOS 6.5 (PVHVM)
   * Description: Server image to use for server servers
   * Possible Values: ```CentOS 6.5 (PVHVM), Debian 7 (Wheezy) (PVHVM), Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)```
 
