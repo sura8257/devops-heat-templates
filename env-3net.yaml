@@ -1,0 +1,3 @@
+resource_registry:
+  DevOps::ChefManaged::Server: ./generic/units/cbs-server-3net.yaml
+  DevOps::ChefManaged::CBSServer: ./generic/units/cbs-server-3net.yaml
