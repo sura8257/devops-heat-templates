@@ -1,49 +1,20 @@
+# vim: set sts=2 sw=2 ts=2 expandtab:
 heat_template_version: 2013-05-23
 
+description: |
+  This heat template will a server with 3 networks which is chef managed
+
 parameters:
-  cbs_volume_name:
-    label: CBS name
-    description: Name of Cloud Block Storage
+  server_name:
+    label: Server hostname
+    description: Server hostname to use
     type: string
-    default: gluster
+    default: node
     constraints:
-    - length:
-        min: 1
-        max: 15
     - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
 
-  gluster_server_name:
-    label: Hostname Prefix
-    description: Name of Gluster Server
-    type: string
-    default: gluster
-    constraints:
-    - length:
-        min: 1
-        max: 15
-    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
-
-  volume_name:
-    type: string
-    description: Name of the volume to be created.
-    default: cbs
-
-  volume_size:
-    type: number
-    description: Size of the volume to be created.
-    default: 75
-    constraints:
-    - range: { min: 75, max: 1024 }
-      description: must be between 75 and 1024 GB
-
-  # gluster_flavor:
-    # type: string
-
-  # gluster_image:
-    # type: string
-
-  gluster_flavor:
-    label: Gluster Server Flavor
+  server_flavor:
+    label: Server Flavor
     type: string
     default: 1 GB General Purpose v1
     constraints:
@@ -70,23 +41,16 @@ parameters:
       Must be a valid Rackspace Cloud Server flavor for the region you have
       selected to deploy into.
 
-  gluster_image:
+  server_image:
     label: Server Base Image
     type: string
-    default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    default: CentOS 6.5 (PVHVM)
     constraints:
     - allowed_values:
       - CentOS 6.5 (PVHVM)
       - Debian 7 (Wheezy) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
-    description: Server image to use for gluster servers
-
-  # gluster_net:
-  #   type: Rackspace::Cloud::Network
-
-  # instance_id:
-  #   type: string
-  #   description: Server to attach volume to
+    description: Server image to use for servers
 
   chef_server_url:
     label: Chef Server URL
@@ -120,49 +84,36 @@ parameters:
     type: string
     default:
 
-  gluster_network:
-    label: Private Network UUID
-    description: The UUID of the private network to be used for gluster traffic
+  server_group:
+    label: Server Group
+    description: Set the group metadata for the servers.
+    type: string
+    default: default_group
+
+  connected_network:
+    label: Extra Network ID
+    description: The network ID to connect the servers to, defaults to None
     type: string
     default:
 
 resources:
-  cbs_volume:
-    type: OS::Cinder::Volume
+  server:
+    type: OS::Nova::Server
     properties:
-      name: { get_param: cbs_volume_name }
-      size: { get_param: volume_size }
-      # description: Volume for GlusterFS server
-
-  cbs_volume_attachment:
-    type: OS::Cinder::VolumeAttachment
-    depends_on:
-    - gluster_server
-    properties:
-      volume_id: { get_resource: cbs_volume }
-      instance_uuid: { get_resource: gluster_server}
-      mountpoint: /dev/xvdg
-
-  gluster_server:
-    type: Rackspace::Cloud::Server
-    depends_on:
-    # - private_net
-    - cbs_volume
-    properties:
-      flavor: { get_param: gluster_flavor }
-      image: { get_param: gluster_image }
+      flavor: { get_param: server_flavor }
+      image: { get_param: server_image }
       config_drive: true
+      name: { get_param: server_name }
       networks:
       - uuid: "00000000-0000-0000-0000-000000000000"
       - uuid: "11111111-1111-1111-1111-111111111111"
-      - uuid: { get_param: gluster_network }
-      name: { get_param: gluster_server_name }
+      - uuid: { get_param: connected_network }
       metadata:
-        group: gluster-build
+        group: { get_param: server_group }
         rax-heat: { get_param: "OS::stack_id" }
       user_data:
         str_replace:
-          template: { get_file: ../templates/chef_bootstrap.tpl }
+          template: { get_file: ../../templates/chef_bootstrap.tpl }
           params:
             "%chef_server_url%": { get_param: chef_server_url}
             "%organization%": { get_param: organization}

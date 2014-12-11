@@ -1,0 +1,134 @@
+heat_template_version: 2013-05-23
+
+description: |
+  Resource group for ```resource_count``` number of servers with 2 networks and a CBS volume
+
+parameters:
+  resource_count:
+    label: Resource Count
+    description: Resource count to create in group
+    type: number
+    default: 1
+    constraints:
+    - range: { min: 1, max: 10 }
+      description: must be between 1 and 10
+
+  prefix:
+    label: Resource Name Prefix
+    description: Used to generate names of resources
+    type: string
+    default: node
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+  
+  volume_size:
+    label: Volume Size
+    type: number
+    description: Size of the volume to be created.
+    default: 75
+    constraints:
+    - range: { min: 75, max: 1024 }
+      description: must be between 75 and 1024 GB
+
+  server_flavor:
+    label: Server Flavor
+    type: string
+    default: 1 GB General Purpose v1
+    constraints:
+    - allowed_values:
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8
+      - 1 GB General Purpose v1
+      - 2 GB General Purpose v1
+      - 4 GB General Purpose v1
+      - 8 GB General Purpose v1
+      - io1-15
+      - io1-30
+      - io1-60
+      - io1-90
+      - io1-120
+      - 15 GB I/O v1
+      - 30 GB I/O v1
+      - 60 GB I/O v1
+      - 90 GB I/O v1
+      - 120 GB I/O v1
+    description: |
+      Must be a valid Rackspace Cloud Server flavor for the region you have
+      selected to deploy into.
+
+  server_image:
+    label: Server Base Image
+    type: string
+    default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    constraints:
+    - allowed_values:
+      - CentOS 6.5 (PVHVM)
+      - Debian 7 (Wheezy) (PVHVM)
+      - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    description: Server image to use for server servers
+
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  run_list:
+    label: Run List
+    description: |
+      Optional: Chef Run List. Will default to an empty string resulting in an empty run_list
+    type: string
+    default: ''
+
+  validation_key:
+    label: Validation Key
+    description: |
+      Required: chef-client will attempt to use the private key assigned to the
+      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
+      the chef-validator is unable to make an authenticated request to the
+      Chef server, the initial chef-client run will fail.
+    type: string
+    default:
+
+  connected_network:
+    label: Primary Network ID
+    description: The network ID to connect the servers to, defaults to public net
+    type: string
+    default: "00000000-0000-0000-0000-000000000000"
+
+resources:
+  resource_group:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: resource_count }
+      resource_def:
+        type: units/cbs-server-2net.yaml
+        properties:
+          connected_network: { get_param: connected_network }
+          volume_size: { get_param: volume_size }
+          server_flavor: { get_param: server_flavor }
+          server_image: { get_param: server_image }
+          chef_server_url: { get_param: chef_server_url}
+          organization: { get_param: organization}
+          run_list: { get_param: run_list}
+          validation_key: { get_param: validation_key}
+          suffix:
+            str_replace:
+              template: prefix-%index%
+              params:
+                prefix: { get_param: prefix }
+
