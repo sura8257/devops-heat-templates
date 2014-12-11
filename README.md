@@ -57,7 +57,7 @@ and image alias.
 
 ## Multi Generic
 
-[Specification Doc](docs/generic-multi.yaml)
+[Specification Doc](docs/generic-multi.md)
 
 Create *generic* stack with multiple servers:
 
@@ -67,7 +67,7 @@ $ supernova heat-rc3 -x heat stack-create -P organization=anzdevops -P validatio
 
 ### Multi CBS Attached Servers
 
-[Specification Doc](docs/cbs-multi.yaml)
+[Specification Doc](docs/cbs-multi.md)
 
 Create CBS+Server stack:
 
