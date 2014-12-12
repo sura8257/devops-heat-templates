@@ -1,0 +1,371 @@
+heat_template_version: 2013-05-23
+
+parameters:
+  
+  min_web_count:
+    label: minimum web server count
+    type: number
+    default: 2
+
+  max_web_count:
+    label: maximum web server count
+    type: number
+    default: 10
+ 
+  bastion_count:
+    label: bastion server count
+    type: number
+    default: 2
+   
+  min_search_count:
+    label: minimum search server count
+    type: number
+    default: 0
+  
+  max_search_count:
+    label: minimum search server count
+    type: number
+    default: 3
+
+  varnish_count:
+    label: varnish server count
+    type: number
+    default: 2
+ 
+  mysql_count:
+    label: mysql server count
+    type: number
+    default: 2
+
+  redis_count:
+    label: redis server count
+    type: number
+    default: 2
+
+  gluster_count:
+    label: gluster server count
+    type: number
+    default: 2
+
+
+
+
+  web_run_list:
+    label: web run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  bastion_run_list:
+    label: bastion run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  search_run_list:
+    label: search run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  varnish_run_list:
+    label: varnish run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  mysql_run_list:
+    label: mysql run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  redis_run_list:
+    label: redis run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+
+  gluster_run_list:
+    label: redis run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+  
+  admin_run_list:
+    label: admin run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+   
+  utility_run_list:
+    label: admin run list
+    type: string
+    default: '"recipe[poc-hn::default]"'
+  
+ 
+
+  admin_network:
+    label: admin network uuid
+    type: string
+    default:
+
+  frontend_network:
+    label: frontend network uuid
+    type: string
+    default:
+
+  backend_network:
+    label: backend network uuid
+    type: string
+    default:
+
+  
+
+  flavor:
+    label: instance flavor to use
+    type: string
+    default: general1-2
+    constraints:
+    - allowed_values:
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8
+      - 1 GB General Purpose v1
+      - 2 GB General Purpose v1
+      - 4 GB General Purpose v1
+      - 8 GB General Purpose v1
+      - io1-15
+      - io1-30
+      - io1-60
+      - io1-90
+      - io1-120
+      - 15 GB I/O v1
+      - 30 GB I/O v1
+      - 60 GB I/O v1
+      - 90 GB I/O v1
+      - 120 GB I/O v1
+    description: |
+      Must be a valid Rackspace Cloud Server flavor for the region you have
+      selected to deploy into. 
+
+  image:
+    label: Server Base Image
+    type: string
+    default: CentOS 6.5 (PVHVM)
+    constraints:
+    - allowed_values:
+      - CentOS 6.5 (PVHVM)
+      - Debian 7 (Wheezy) (PVHVM)
+      - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
+    description: Server image to use for server servers  
+ 
+  autoscale_image:
+    label: Server image for autoscale servers
+    type: string
+    description: UUID of image for autoscale
+    default:
+ 
+  validation_key:
+    label: Validation Key
+    description: |
+      Required: chef-client will attempt to use the private key assigned to the
+      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
+      the chef-validator is unable to make an authenticated request to the
+      Chef server, the initial chef-client run will fail.
+    type: string
+    default:
+  
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+  
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  prefix:
+    label: Resource Name Prefix
+    description: Used to generate names of resources
+    type: string
+    default: node
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+  
+
+
+resources:
+
+  web_servers_autoscale_group:
+    type: DevOps::ChefManaged::AutoScaleGroup
+    properties:
+      prefix:
+        str_replace:
+          template: prefix-web
+          params:
+            prefix: { get_param: prefix }
+      server_flavor: { get_param: flavor }
+      min_server_count: { get_param: min_web_count }
+      max_server_count: { get_param: max_web_count }
+      server_image: { get_param: autoscale_image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: web_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: frontend_network }
+   
+  search_master:
+    type: DevOps::ChefManaged::Server
+    properties:
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: search_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: frontend_network }
+      server_name:
+        str_replace:
+          template: prefix-srchm
+          params:
+            prefix: { get_param: prefix }
+
+   
+  search_servers_autoscale_group:
+    type: DevOps::ChefManaged::AutoScaleGroup
+    properties:
+      prefix:
+        str_replace:
+          template: prefix-search
+          params:
+            prefix: { get_param: prefix }
+      server_flavor: { get_param: flavor }
+      min_server_count: { get_param: min_web_count }
+      max_server_count: { get_param: max_web_count }
+      server_image: { get_param: autoscale_image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: search_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: frontend_network }
+ 
+  bastion_servers:
+    type: DevOps::ChefManaged::ServerGroup
+    properties:
+      resource_count: { get_param: bastion_count }
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: bastion_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: admin_network }
+      prefix:
+        str_replace:
+          template: prefix-bast
+          params:
+            prefix: { get_param: prefix }
+    
+  varnish_servers:
+    type: DevOps::ChefManaged::ServerGroup
+    properties:
+      resource_count: { get_param: varnish_count }
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: varnish_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: frontend_network }
+      prefix:
+        str_replace:
+          template: prefix-varn
+          params:
+            prefix: { get_param: prefix }
+ 
+  mysql_servers:
+    type: DevOps::ChefManaged::CBSServerGroup
+    properties:
+      resource_count: { get_param: mysql_count }
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: mysql_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: backend_network }
+      prefix:
+        str_replace:
+          template: prefix-mysql
+          params:
+            prefix: { get_param: prefix }
+ 
+  redis_servers:
+    type: DevOps::ChefManaged::ServerGroup
+    properties:
+      resource_count: { get_param: redis_count }
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: redis_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: frontend_network }
+      prefix:
+        str_replace:
+          template: prefix-redis
+          params:
+            prefix: { get_param: prefix }
+
+  gluster_servers:
+    type: DevOps::ChefManaged::CBSServerGroup
+    properties:
+      resource_count: { get_param: gluster_count }
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: gluster_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: backend_network }
+      prefix:
+        str_replace:
+          template: prefix-glus
+          params:
+            prefix: { get_param: prefix }
+ 
+  admin_server:
+    type: DevOps::ChefManaged::Server
+    properties:
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: admin_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: admin_network }
+      server_name:
+        str_replace:
+          template: prefix-admin
+          params:
+            prefix: { get_param: prefix }
+
+  utility_server:
+    type: DevOps::ChefManaged::Server
+    properties:
+      server_flavor: { get_param: flavor }
+      server_image: { get_param: image }
+      chef_server_url: { get_param: chef_server_url }
+      organization: { get_param: organization }
+      run_list: { get_param: utility_run_list }
+      validation_key: { get_param: validation_key }
+      connected_network: { get_param: admin_network }
+      server_name:
+        str_replace:
+          template: prefix-util
+          params:
+            prefix: { get_param: prefix }
+

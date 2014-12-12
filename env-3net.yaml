@@ -1,3 +1,8 @@
 resource_registry:
-  DevOps::ChefManaged::Server: ./generic/units/generic-3net.yaml
-  DevOps::ChefManaged::CBSServer: ./generic/units/cbs-server-3net.yaml
+  DevOps::ChefManaged::ServerGroup: ./generic/generic-multi.yaml
+  DevOps::ChefManaged::Server: ./generic/units/generic-2net.yaml
+
+  DevOps::ChefManaged::CBSServerGroup: ./generic/cbs-multi.yaml
+  DevOps::ChefManaged::CBSServer: ./generic/units/cbs-server-2net.yaml
+
+  DevOps::ChefManaged::AutoScaleGroup: ./autoscale/autoscale.yaml
