@@ -49,33 +49,43 @@ Two environemt files are available for use ```env-2net.yaml``` and ```env-3net.y
 Create Autoscale Group and configuration:
 
 ```
-$ heat stack-create -P organization=fooorg -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f /path/to/poc-hn-heat/autoscale/autoscale.yaml -P server_image=70d38a32-5f63-45df-a0e7-7e06fc89370a autoscale-test
+$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f /path/to/autoscale/autoscale.yaml -P server_image=70d38a32-5f63-45df-a0e7-7e06fc89370a autoscale-test
 ```
 
-**Attention!** Autoscale requires flavor and image id, it does not accept flavor
-and image alias.
+**Attention!** Autoscale requires flavor and image id, *it does not accept flavor
+and image alias*.
 
 ## Multi Generic
 
 [Specification Doc](docs/generic-multi.md)
 
-Create *generic* stack with multiple servers:
+Create *generic* stack with multiple servers connected to *Public* and *Private* networks:
 
 ```
-$ supernova heat-rc3 -x heat stack-create -P organization=anzdevops -P validation_key="$(< /path/to/.chef/anzdevops-validator.pem)" -f generic/generic-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=generic-test-01 generic-test-01
+$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/generic-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=generic-test-01 generic-test-01
 ```
 
-### Multi CBS Attached Servers
+Create *generic* stack with multiple servers connected to *Public*, *Private* and *Custom* networks:
+
+```
+$ heat stack-create -P prefix=FOOORG -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -P run_list='"recipe[rackops_rolebook]"' -f generic/generic-multi.yaml -P resource_count=1 -P connected_network=056e7b19-5099-404b-be00-51d8b4d47a17 -e env-3net.yaml generic-test-02
+```
+
+## Multi CBS Attached Servers
+
+Typical use cases are servers which benefit from a dedicated block-storage device, e.g. MySQL or GlusterFS nodes.
 
 [Specification Doc](docs/cbs-multi.md)
 
 Create CBS+Server stack:
 
 ```
-supernova heat-rc3 -x heat stack-create -P organization=anzdevops -P validation_key="$(< /path/to/.chef/anzdevops-validator.pem)" -f generic/cbs-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=cbs-test-01 cbs-test-01
+$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/cbs-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=cbs-test-01 cbs-test-01
 ```
 
-### Delete stack
+To connect servers to *Public*, *Private* and *Custom* networks see *Multi Generic* section.
+
+## Delete stack
 
 Just run:
 
@@ -89,7 +99,9 @@ Alternatively abandon stack, and deletete resources manually:
 $ heat stack-abandon foo-stack
 ```
 
-### Chef Client 'run_list'
+## Chef integration
+
+### Chef Client "run_list"
 
 Use *run_list** parameter:
 
