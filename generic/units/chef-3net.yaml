@@ -2,7 +2,7 @@
 heat_template_version: 2013-05-23
 
 description: |
-  This heat template will a server with 3 networks
+  This heat template will a server with 3 networks which is chef managed
 
 parameters:
   server_name:
@@ -52,6 +52,38 @@ parameters:
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     description: Server image to use for servers
 
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  run_list:
+    label: Run List
+    description: |
+      Optional: Chef Run List. Will default to an empty string resulting in an empty run_list
+    type: string
+    default: ''
+
+  validation_key:
+    label: Validation Key
+    description: |
+      Required: chef-client will attempt to use the private key assigned to the
+      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
+      the chef-validator is unable to make an authenticated request to the
+      Chef server, the initial chef-client run will fail.
+    type: string
+    default:
+
   server_group:
     label: Server Group
     description: Set the group metadata for the servers.
@@ -79,3 +111,11 @@ resources:
       metadata:
         group: { get_param: server_group }
         rax-heat: { get_param: "OS::stack_id" }
+      user_data:
+        str_replace:
+          template: { get_file: ../../templates/chef_bootstrap.tpl }
+          params:
+            "%chef_server_url%": { get_param: chef_server_url}
+            "%organization%": { get_param: organization}
+            "%run_list%": { get_param: run_list}
+            "%validation_key%": { get_param: validation_key }
