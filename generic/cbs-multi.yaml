@@ -116,7 +116,7 @@ resources:
     properties:
       count: { get_param: resource_count }
       resource_def:
-        type: units/cbs-server-2net.yaml
+        type: DevOps::ChefManaged::CBSServer
         properties:
           connected_network: { get_param: connected_network }
           volume_size: { get_param: volume_size }
