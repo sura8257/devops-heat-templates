@@ -62,13 +62,13 @@ and image alias*.
 Create *generic* stack with multiple servers connected to *Public* and *Private* networks:
 
 ```
-$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/generic-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=generic-test-01 generic-test-01
+$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/chef-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=generic-test-01 generic-test-01
 ```
 
 Create *generic* stack with multiple servers connected to *Public*, *Private* and *Custom* networks:
 
 ```
-$ heat stack-create -P prefix=FOOORG -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -P run_list='"recipe[rackops_rolebook]"' -f generic/generic-multi.yaml -P resource_count=1 -P connected_network=056e7b19-5099-404b-be00-51d8b4d47a17 -e env-3net.yaml generic-test-02
+$ heat stack-create -P prefix=FOOORG -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -P run_list='"recipe[rackops_rolebook]"' -f generic/chef-multi.yaml -P resource_count=1 -P connected_network=056e7b19-5099-404b-be00-51d8b4d47a17 -e env-3net.yaml generic-test-02
 ```
 
 ## Multi CBS Attached Servers
@@ -80,7 +80,7 @@ Typical use cases are servers which benefit from a dedicated block-storage devic
 Create CBS+Server stack:
 
 ```
-$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/cbs-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=cbs-test-01 cbs-test-01
+$ heat stack-create -P organization=FOOORG -P validation_key="$(< /path/to/.chef/fooorg-validator.pem)" -f generic/cbs-chef-multi.yaml -P run_list='"recipe[rackops_rolebook]"' -e env-2net.yaml -P resource_count=2 -P prefix=cbs-test-01 cbs-test-01
 ```
 
 To connect servers to *Public*, *Private* and *Custom* networks see *Multi Generic* section.
