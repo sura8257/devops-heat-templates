@@ -1,8 +1,10 @@
 resource_registry:
-  DevOps::ChefManaged::ServerGroup: ./generic/generic-multi.yaml
-  DevOps::ChefManaged::Server: ./generic/units/generic-3net.yaml
-
-  DevOps::ChefManaged::CBSServerGroup: ./generic/cbs-multi.yaml
-  DevOps::ChefManaged::CBSServer: ./generic/units/cbs-server-3net.yaml
-
-  DevOps::ChefManaged::AutoScaleGroup: ./autoscale/autoscale.yaml
+  DevOps::ChefManaged::ServerGroup: ./generic/chef-multi.yaml
+  DevOps::ChefManaged::Server: ./generic/units/chef-3net.yaml
+  DevOps::NoChef::Server: ./generic/units/generic-3net.yaml
+  
+  DevOps::ChefManaged::CBSServerGroup: ./generic/cbs-chef-multi.yaml
+  DevOps::ChefManaged::CBSServer: ./generic/units/cbs-chef-server-3net.yaml
+  DevOps::NoChef::CBSServer: ./generic/units/cbs-nochef-server-3net.yaml
+  
+  DevOps::ChefManaged::AutoScaleGroup: ./autoscale/chef-autoscale.yaml

@@ -1,17 +1,37 @@
-# vim: set sts=2 sw=2 ts=2 expandtab:
 heat_template_version: 2013-05-23
 
 description: |
-  This heat template will a server with 2 networks
+  Resource group for ```resource_count``` number of servers with a CBS volume
 
 parameters:
-  server_name:
-    label: Server hostname
-    description: Server hostname to use
+  resource_count:
+    label: Resource Count
+    description: Resource count to create in group
+    type: number
+    default: 1
+    constraints:
+    - range: { min: 1, max: 10 }
+      description: must be between 1 and 10
+
+  prefix:
+    label: Resource Name Prefix
+    description: Used to generate names of resources
     type: string
     default: node
     constraints:
+    - length:
+        min: 1
+        max: 15
     - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+  
+  volume_size:
+    label: Volume Size
+    type: number
+    description: Size of the volume to be created.
+    default: 75
+    constraints:
+    - range: { min: 75, max: 1024 }
+      description: must be between 75 and 1024 GB
 
   server_flavor:
     label: Server Flavor
@@ -50,7 +70,7 @@ parameters:
       - CentOS 6.5 (PVHVM)
       - Debian 7 (Wheezy) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
-    description: Server image to use for servers
+    description: Server image to use for server servers
 
   connected_network:
     label: Primary Network ID
@@ -58,23 +78,21 @@ parameters:
     type: string
     default: "00000000-0000-0000-0000-000000000000"
 
-  ssh_key:
-    label: SSH Key Name
-    description: SSH Key name to use for the instance, must already exist in the target openstack region
-    type: string
-    default:
-
 resources:
-  server:
-    type: OS::Nova::Server
+  resource_group:
+    type: OS::Heat::ResourceGroup
     properties:
-      flavor: { get_param: server_flavor }
-      image: { get_param: server_image }
-      config_drive: true
-      name: { get_param: server_name }
-      key_name: { get_param: ssh_key }
-      networks:
-      - uuid: { get_param: connected_network }
-      - uuid: "11111111-1111-1111-1111-111111111111"
-      metadata:
-        rax-heat: { get_param: "OS::stack_id" }
+      count: { get_param: resource_count }
+      resource_def:
+        type: DevOps::NoChef::CBSServer
+        properties:
+          connected_network: { get_param: connected_network }
+          volume_size: { get_param: volume_size }
+          server_flavor: { get_param: server_flavor }
+          server_image: { get_param: server_image }
+          suffix:
+            str_replace:
+              template: prefix-%index%
+              params:
+                prefix: { get_param: prefix }
+
