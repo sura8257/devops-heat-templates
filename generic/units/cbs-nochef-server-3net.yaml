@@ -65,6 +65,12 @@ parameters:
     type: string
     default:
 
+  ssh_key:
+    label: SSH Key Name
+    description: The name of the SSH key to use as shown in the rackspace cloud portal
+    type: string
+    default:
+
 resources:
   cbs_volume:
     type: OS::Cinder::Volume
@@ -93,6 +99,7 @@ resources:
       flavor: { get_param: server_flavor }
       image: { get_param: server_image }
       config_drive: true
+      key_name: { get_param: ssh_key }
       networks:
       - uuid: "00000000-0000-0000-0000-000000000000"
       - uuid: "11111111-1111-1111-1111-111111111111"

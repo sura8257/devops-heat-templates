@@ -78,6 +78,12 @@ parameters:
     type: string
     default: "00000000-0000-0000-0000-000000000000"
 
+  ssh_key:
+    label: SSH Key Name
+    description: The name of the SSH key to use as shown in the rackspace cloud portal
+    type: string
+    default:
+
 resources:
   resource_group:
     type: OS::Heat::ResourceGroup
@@ -90,6 +96,7 @@ resources:
           volume_size: { get_param: volume_size }
           server_flavor: { get_param: server_flavor }
           server_image: { get_param: server_image }
+          ssh_key: { get_param: ssh_key }
           suffix:
             str_replace:
               template: prefix-%index%
