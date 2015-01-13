@@ -72,38 +72,6 @@ parameters:
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     description: Server image to use for server servers
 
-  chef_server_url:
-    label: Chef Server URL
-    description: |
-       Optional: Chef Server URL. Defaults to None, but the BASH script will
-       infer the Managed Chef URL from the organization
-    type: string
-    default: ''
-
-  organization:
-    label: Organization
-    description: |
-      Required: Chef organization
-    type: string
-    default:
-
-  run_list:
-    label: Run List
-    description: |
-      Optional: Chef Run List. Will default to an empty string resulting in an empty run_list
-    type: string
-    default: ''
-
-  validation_key:
-    label: Validation Key
-    description: |
-      Required: chef-client will attempt to use the private key assigned to the
-      chef-validator, located in /etc/chef/validation.pem. If, for any reason,
-      the chef-validator is unable to make an authenticated request to the
-      Chef server, the initial chef-client run will fail.
-    type: string
-    default:
-
   connected_network:
     label: Primary Network ID
     description: The network ID to connect the servers to, defaults to public net
@@ -116,16 +84,12 @@ resources:
     properties:
       count: { get_param: resource_count }
       resource_def:
-        type: DevOps::ChefManaged::CBSServer 
+        type: DevOps::NoChef::CBSServer
         properties:
           connected_network: { get_param: connected_network }
           volume_size: { get_param: volume_size }
           server_flavor: { get_param: server_flavor }
           server_image: { get_param: server_image }
-          chef_server_url: { get_param: chef_server_url}
-          organization: { get_param: organization}
-          run_list: { get_param: run_list}
-          validation_key: { get_param: validation_key}
           suffix:
             str_replace:
               template: prefix-%index%
