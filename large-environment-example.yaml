@@ -53,47 +53,47 @@ parameters:
   web_run_list:
     label: web run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   bastion_run_list:
     label: bastion run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   search_run_list:
     label: search run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   varnish_run_list:
     label: varnish run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   mysql_run_list:
     label: mysql run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   redis_run_list:
     label: redis run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
 
   gluster_run_list:
     label: redis run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
   
   admin_run_list:
     label: admin run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
    
   utility_run_list:
     label: admin run list
     type: string
-    default: '"recipe[poc-hn::default]"'
+    default: '"recipe[large-env::default]"'
   
  
 

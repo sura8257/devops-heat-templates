@@ -1,7 +1,7 @@
-poc-hn-heat
+devops heat templates
 ===========
 
-Heat templates for poc-hn gluster components
+Heat templates for devops automation 
 
 ## Quickstart
 
