@@ -4,8 +4,8 @@ import sys
 
 
 command_defaults = {
-  "validation_key": '\"$(< ~/chef-repo/.chef/anzdevops-validator.pem)\"',
-  "organization": "anzdevops",
+  "validation_key": '\"$(< ~/chef-repo/.chef/fooorg-validator.pem)\"',
+  "organization": "fooorg",
   "run_list": "\'\"recipe[rackops_rolebook]\"\'",
   "chef_server_url": None,
   "connected_network": None
