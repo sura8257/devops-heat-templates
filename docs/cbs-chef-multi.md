@@ -63,4 +63,4 @@ selected to deploy into.
 * resource_group: OS::Heat::ResourceGroup
 
 # Example Usage
-```supernova heat-rc3 -x heat stack-create -P resource_count=1 -P validation_key="$(< ~/chef-repo/.chef/anzdevops-validator.pem)" -P volume_size=75 -P prefix=node -P run_list='"recipe[rackops_rolebook]"' -P organization=anzdevops -P server_flavor=1 GB General Purpose v1 -P server_image=CentOS 6.5 (PVHVM) -f generic/cbs-chef-multi.yaml -e env-2net.yaml stack-name ```
+```supernova heat-rc3 -x heat stack-create -P resource_count=1 -P validation_key="$(< ~/chef-repo/.chef/fooorg-validator.pem)" -P volume_size=75 -P prefix=node -P run_list='"recipe[rackops_rolebook]"' -P organization=fooorg -P server_flavor=1 GB General Purpose v1 -P server_image=CentOS 6.5 (PVHVM) -f generic/cbs-chef-multi.yaml -e env-2net.yaml stack-name ```
