@@ -51,12 +51,12 @@ selected to deploy into.
   * Possible Values: ```general1-1, general1-2, general1-4, general1-8, 1 GB General Purpose v1, 2 GB General Purpose v1, 4 GB General Purpose v1, 8 GB General Purpose v1, io1-15, io1-30, io1-60, io1-90, io1-120, 15 GB I/O v1, 30 GB I/O v1, 60 GB I/O v1, 90 GB I/O v1, 120 GB I/O v1```
 * Server Base Image
   * Name: server_image
-  * Default: CentOS 6.5 (PVHVM)
+  * Default: CentOS 6 (PVHVM)
   * Description: Server image to use for server servers
-  * Possible Values: ```CentOS 6.5 (PVHVM), Debian 7 (Wheezy) (PVHVM), Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)```
+  * Possible Values: ```CentOS 6 (PVHVM), Debian 7 (Wheezy) (PVHVM), Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)```
 
 ## Resources to be deployed
 * resource_group: OS::Heat::ResourceGroup
 
 # Example Usage
-```supernova heat-rc3 -x heat stack-create -P resource_count=1 -P validation_key="$(< ~/chef-repo/.chef/fooorg-validator.pem)" -P prefix=node -P run_list='"recipe[rackops_rolebook]"' -P organization=fooorg -P server_flavor=1 GB General Purpose v1 -P server_image=CentOS 6.5 (PVHVM) -f generic/chef-multi.yaml -e env-2net.yaml stack-name ```
+```supernova heat-rc3 -x heat stack-create -P resource_count=1 -P validation_key="$(< ~/chef-repo/.chef/fooorg-validator.pem)" -P prefix=node -P run_list='"recipe[rackops_rolebook]"' -P organization=fooorg -P server_flavor=1 GB General Purpose v1 -P server_image=CentOS 6 (PVHVM) -f generic/chef-multi.yaml -e env-2net.yaml stack-name ```
