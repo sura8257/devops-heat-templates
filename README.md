@@ -112,9 +112,9 @@ Use *run_list** parameter:
 
 License & Authors
 -----------------
-- Author:: Simon Mirco (<simon.mirco@rackspace.com>), @boxidau
-- Author:: Simone Soldateschi (<simone.soldateschi@rackspace.co.uk>), @siso
-- Author:: Teddy Schmitz (<teddy.schmitz@rackspace.com>), @Teddy-Schmitz
+- Author:: Simon Mirco (<simon.mirco@rackspace.com>), [@boxidau](https://github.com/boxidau)
+- Author:: Simone Soldateschi (<simone.soldateschi@rackspace.co.uk>), [@siso](https://github.com/siso)
+- Author:: Teddy Schmitz (<teddy.schmitz@rackspace.com>), [@Teddy-Schmitz](https://github.com/Teddy-Schmitz)
 
 ```text
 
