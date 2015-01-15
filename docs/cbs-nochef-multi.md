@@ -16,9 +16,9 @@ Resource group for ```resource_count``` number of servers with a CBS volume
   * Description: Used to generate names of resources
 * Server Base Image
   * Name: server_image
-  * Default: CentOS 6.5 (PVHVM)
+  * Default: CentOS 6 (PVHVM)
   * Description: Server image to use for server servers
-  * Possible Values: ```CentOS 6.5 (PVHVM), Debian 7 (Wheezy) (PVHVM), Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)```
+  * Possible Values: ```CentOS 6 (PVHVM), Debian 7 (Wheezy) (PVHVM), Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)```
 * Resource Count
   * Name: resource_count
   * Default: 1
@@ -43,4 +43,4 @@ selected to deploy into.
 * resource_group: OS::Heat::ResourceGroup
 
 # Example Usage
-```supernova heat-rc3 -x heat stack-create -P volume_size=75 -P prefix=node -P server_image=CentOS 6.5 (PVHVM) -P resource_count=1 -P ssh_key=None -P server_flavor=1 GB General Purpose v1 -f generic/cbs-nochef-multi.yaml -e env-2net.yaml stack-name ```
+```supernova heat-rc3 -x heat stack-create -P volume_size=75 -P prefix=node -P server_image=CentOS 6 (PVHVM) -P resource_count=1 -P ssh_key=None -P server_flavor=1 GB General Purpose v1 -f generic/cbs-nochef-multi.yaml -e env-2net.yaml stack-name ```

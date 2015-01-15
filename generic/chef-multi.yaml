@@ -55,10 +55,10 @@ parameters:
   server_image:
     label: Server Base Image
     type: string
-    default: CentOS 6.5 (PVHVM)
+    default: CentOS 6 (PVHVM)
     constraints:
     - allowed_values:
-      - CentOS 6.5 (PVHVM)
+      - CentOS 6 (PVHVM)
       - Debian 7 (Wheezy) (PVHVM)
       - Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
     description: Server image to use for server servers
