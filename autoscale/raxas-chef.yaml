@@ -1,0 +1,179 @@
+# vim: set sts=2 sw=2 ts=2 expandtab:
+heat_template_version: 2014-10-16
+
+description: |
+  This heat template will deploy an autoscale group.
+
+parameter_groups:
+
+- label: Server Settings
+  parameters:
+  - server_flavor
+
+- label: Chef Parameters
+  parameters:
+  - chef_server_url
+  - organization
+  - run_list
+  - environment
+
+parameters:
+  prefix:
+    label: Hostname Prefix
+    description: The prefix to use for all server hostnames
+    type: string
+    default: as-group
+    constraints:
+    - length:
+        min: 1
+        max: 15
+    - allowed_pattern: "^[a-zA-Z][a-zA-Z0-9-]*$"
+
+  server_flavor:
+    label: Server Flavor
+    type: string
+    default: general1-1
+    constraints:
+    - allowed_values:
+      - general1-1
+      - general1-2
+      - general1-4
+      - general1-8    
+    description: |
+      Must be a valid Rackspace Cloud Server flavor for the region you have
+      selected to deploy into.
+
+  server_image:
+    label: Server Base Image
+    type: string
+    description: Server image to use for servers
+
+  chef_server_url:
+    label: Chef Server URL
+    description: |
+       Optional: Chef Server URL. Defaults to None, but the BASH script will
+       infer the Managed Chef URL from the organization
+    type: string
+    default: ''
+
+  organization:
+    label: Organization
+    description: |
+      Required: Chef organization
+    type: string
+    default:
+
+  run_list:
+    label: Run List
+    description: |
+      Optional: Chef Run List. Will default to an empty string resulting in an empty run_list
+    type: string
+    default: ''
+
+  environment:
+    label: Chef Environment
+    description: |
+      Optional: Chef Environment. Will default to _default
+    type: string
+    default: '_default'
+
+  api_key:
+    label: api_key
+    description: |
+      Required: api_key
+    type: string
+    default:
+
+  username:
+    label: username
+    description: |
+      Required: username
+    type: string
+    default:
+
+  git_branch:
+    label: git_branch
+    description: |
+      Optional: rax-autoscaler git branch to checkout. Will default to devel
+    type: string
+    default: 'devel'
+
+  pystress_time:
+    label: pystress_time
+    description: |
+      Optional: pystress time. Will default to 0 sec
+    type: string
+    default: '0'
+
+resources:
+
+  auto_scale_group:
+    type: Rackspace::AutoScale::Group
+    properties:
+      groupConfiguration:
+        name: { get_param: prefix }
+        maxEntities: 1
+        minEntities: 0
+        cooldown: 1
+      launchConfiguration:
+        type: launch_server
+        args:
+          server:
+            name: { get_param: prefix }
+            flavorRef: { get_param: server_flavor }
+            imageRef: { get_param: server_image }
+            config_drive: true
+            networks:
+            - uuid: "00000000-0000-0000-0000-000000000000"
+            - uuid: "11111111-1111-1111-1111-111111111111"
+            user_data:
+              str_replace:
+                template: { get_file: ../templates/raxas_chef_bootstrap.tpl }
+                params:
+                  "%chef_server_url%": { get_param: chef_server_url}
+                  "%organization%": { get_param: organization}
+                  "%run_list%": { get_param: run_list}
+                  "%validation_key%": { get_file: ../.chef/anzdevops-validator.pem }
+                  "%environment%": { get_param: environment }
+                  "%username%": { get_param: username }
+                  "%api_key%": { get_param: api_key }
+                  "%git_branch%": { get_param: git_branch }
+                  "%pystress_time%": { get_param: pystress_time }
+
+  scale_up_1_policy:
+    type: Rackspace::AutoScale::ScalingPolicy
+    depends_on:
+    - auto_scale_group
+    properties:
+      group: { get_resource: auto_scale_group }
+      name: Scale Up 1
+      change: 1
+      cooldown: 1
+      type: webhook
+
+  scale_down_1_policy:
+    type: Rackspace::AutoScale::ScalingPolicy
+    depends_on:
+    - auto_scale_group
+    properties:
+      group: { get_resource: auto_scale_group }
+      name: Scale Down 1
+      change: -1
+      cooldown: 1
+      type: webhook
+
+  scale_up_1_webhook:
+    type: Rackspace::AutoScale::WebHook
+    depends_on:
+    - scale_up_1_policy
+    properties:
+      policy: { get_resource: scale_up_1_policy }
+      name: Scale Up 1 Hook
+
+  scale_down_1_webhook:
+    type: Rackspace::AutoScale::WebHook
+    depends_on:
+    - scale_down_1_policy
+    properties:
+      policy: { get_resource: scale_down_1_policy }
+      name: Scale Down 1 Hook

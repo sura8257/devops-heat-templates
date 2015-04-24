@@ -1,0 +1,21 @@
+parameters:
+
+  # Server Params
+  server_flavor: general1-1
+  server_image: af2606d8-14a8-4ba7-a2f7-04fa3660251d
+  prefix: autoscale
+
+  # Chef Params
+  environment: staging
+  run_list: '"recipe[platformstack::rackops_rolebook]"'
+  organization: CHEF ORGANIZATION
+
+  #Cloud Credential
+  username: USERNAME 
+  api_key: API KEY 
+
+  #Git branch of rax-autoscaler
+  git_branch: devel
+
+  #Pystress time in sec, set to 0 if stress test is not required
+  pystress_time: 0
